@@ -4,6 +4,12 @@
     <item
         android:id="@+id/contact"
         android:title="@string/contact_menu"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings_menu"
+        android:tooltipText="@string/settings_desc"
+        app:showAsAction="never"
+        />
 
 </menu>

@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         
     </style>
     
@@ -18,6 +19,17 @@
         <item name="overlapAnchor">false</item>
 
     </style>
+    
+    <style name="AppBaseTheme" parent="android:Theme.Light" >
+    </style>
 
+    <style name="AppSecTheme" parent="AppBaseTheme">
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll__default_bubble</item>
+        <item name="android:fastScrollOverlayPosition">atThumb</item>
+        <item name="android:fastScrollTextColor">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
 </resources>

@@ -1,12 +1,16 @@
 package com.noob.audioplayer;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.LinearGradient;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 BottomNavigationView b1;
 Fragment f1;
 Toolbar toolbar;
+ArrayList<String> songArtistsMain;
+//private static final String TAG = "MainActivity";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,10 +57,12 @@ Toolbar toolbar;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         b1=(BottomNavigationView)findViewById(R.id.botttom_nav);
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        display();
+        //display();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_main,new SongsFragment()).commit();
     }
 
@@ -74,7 +82,8 @@ Toolbar toolbar;
                         selectedFragment=new AlbumFragment();
                         break;
                     case R.id.artists:
-                        selectedFragment=new ArtistsFragment();
+                        selectedFragment=new ArtistFragment();
+
                         break;
                     case R.id.playlists:
                         selectedFragment=new PlaylistsFragment();
@@ -87,6 +96,25 @@ Toolbar toolbar;
         });
 
     }
+
+    /*public void displayArtists(ArrayList<String> listArtists) {
+        //Intent i = getIntent();
+        //Bundle bundle = i.getExtras();
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        /*AlbumFragment albumFragment = new AlbumFragment();*/
+        /*ArtistFragment artistFragment = new ArtistFragment();
+        //songArtistsMain = new ArrayList<>();
+        //songArtistsMain = (ArrayList) bundle.getParcelableArrayList("songname");
+        //bundle.putString("path",selectedFilePath);
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("artists",listArtists);
+        artistFragment.setArguments(bundle);
+
+        //fragmentTransaction.replace(R.id.frame_main,artistFragment).commit();
+    }*/
+
 
 
 }
