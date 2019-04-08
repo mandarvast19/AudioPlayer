@@ -93,7 +93,6 @@ public class CustomAdapter extends ArrayAdapter<String>  {
                                 }
                             });
                             break;
-
                             default:
                                 break;
                     }

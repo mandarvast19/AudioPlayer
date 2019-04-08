@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/error_playlist"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="66dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginRight="138dp"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_error_outline_black_24dp" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Playlists"
-        android:textSize="30sp"
+        android:layout_below="@id/error_playlist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:text="No Playlists!"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/float_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/design_default_color_primary"
+        android:background="@drawable/circlebuttonbackground"
+        android:src="@drawable/ic_add_black_24dp"
+
         />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listPlaylists" />
 
 </RelativeLayout>

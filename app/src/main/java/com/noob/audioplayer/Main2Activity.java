@@ -77,7 +77,7 @@ public class Main2Activity extends AppCompatActivity {
         Intent i = getIntent();
         Bundle bundle =  i.getExtras();
         position= bundle.getInt("pos",0);
-        final String filePath = i.getStringExtra("pathsingle");
+        //final String filePath = i.getStringExtra("pathsingle");
 
         mySongs = new ArrayList<>();
         songTimeList = new ArrayList<>();
@@ -86,6 +86,7 @@ public class Main2Activity extends AppCompatActivity {
         mySongs = (ArrayList) bundle.getParcelableArrayList("songname");
         songTimeList = (ArrayList) bundle.getParcelableArrayList("time");
 
+        String filePath = songPath.get(position).toString();
 
         final Context myContext = getApplicationContext();
         String albumId = albumArt.get(position);
@@ -166,8 +167,8 @@ public class Main2Activity extends AppCompatActivity {
                 //myMediaPlayer.release();
                 position = ((position+1)%mySongs.size());
                 String newPath = songPath.get(position);
-                String albumPath = albumArt.get(position);
-                getAlbumArt(myContext,albumPath);
+                //String albumPath = albumArt.get(position);
+                //getAlbumArt(myContext,albumPath);
                 myMediaPlayer = new MediaPlayer();
                 try {
                     myMediaPlayer.setDataSource(newPath);
@@ -196,8 +197,8 @@ public class Main2Activity extends AppCompatActivity {
                 myMediaPlayer.release();
                 position = (((position-1)<0) ?(mySongs.size()): (position-1));
                 String newPath = songPath.get(position);
-                String albumPath = albumArt.get(position);
-                getAlbumArt(myContext,albumPath);
+                //String albumPath = albumArt.get(position);
+                //getAlbumArt(myContext,albumPath);
                 myMediaPlayer = new MediaPlayer();
                 try {
                     myMediaPlayer.setDataSource(newPath);
@@ -218,9 +219,8 @@ public class Main2Activity extends AppCompatActivity {
 
 
     public void startSeekAsync(){
-        int currtposition = 0;
-        SeekBarASync async = new SeekBarASync();
-        async.execute(currtposition);
+        SeekRunnable seekRunnable = new SeekRunnable();
+        new Thread(seekRunnable).start();
     }
 
     public void getAlbumArt(Context context,String albumPath){
@@ -238,7 +238,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
 
-    public class SeekBarASync extends AsyncTask<Integer, String, String>{
+    /*public class SeekBarASync extends AsyncTask<Integer, String, String>{
 
         @Override
         protected void onPreExecute() {
@@ -273,7 +273,7 @@ public class Main2Activity extends AppCompatActivity {
                         songPosition = hrs + ":" + minutes + ":" + seconds;
                     } else {
                         songPosition= minutes + ":" + seconds;
-                    }*/
+                    }
 
                     publishProgress(songPosition);
                     //cancel(true);
@@ -281,8 +281,9 @@ public class Main2Activity extends AppCompatActivity {
                     //e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                 }
+                cancel(true);
             }
-            cancel(true);
+            //cancel(true);
             return null;
         }
         @Override
@@ -297,7 +298,55 @@ public class Main2Activity extends AppCompatActivity {
 
         }
 
-    }
+    }*/
+
+    public class SeekRunnable implements Runnable{
+        String songPosition;
+
+        @Override
+        public void run() {
+            int totalDuration = myMediaPlayer.getDuration();
+            String duration = songTimeList.get(position).toString();
+            //String songPosition = null;
+            timelabel2.setText(duration);
+            int currentposition = 0;
+            while(currentposition<totalDuration){
+                try {
+                    Thread.sleep(1000);
+                    currentposition = myMediaPlayer.getCurrentPosition();
+                    songSeek.setProgress(currentposition);
+                    //final String songPosition = String.valueOf(currentposition);
+                    int hrs = (int) ((currentposition / 3600000))*100/10;
+                    int mns = (int)((currentposition - (hrs * 3600000)) / 60000)*100/10;
+                    int scs = (int)((currentposition - (hrs * 3600000) - (mns * 60000)))*100/10;
+                    String minutes = String.valueOf(mns);
+                    String seconds = String.valueOf(scs);
+                    if (seconds.length() < 2) {
+                        seconds = "00";
+                    } else {
+                        seconds = seconds.substring(0, 2);
+                    }
+
+                    if (hrs > 0) {
+                        songPosition = hrs + ":" + minutes + ":" + seconds;
+                    } else {
+                        songPosition= minutes + ":" + seconds;
+                    }
+                    timelabel.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            timelabel.setText(songPosition);
+                        }
+                    });
+                    //cancel(true);
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        }
+
 
 
 

@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +57,7 @@ import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScrol
 
 
 public class SongsFragment extends Fragment{
-    ListView l1;
+    //ListView l1;
     String[] items;
     Thread songListUpdate;
     RecyclerView recyclerView;
@@ -75,15 +76,22 @@ public class SongsFragment extends Fragment{
     BottomNavigationView b2;
     private MainActivity myContext;
 
+    private RecyclerView mRecyclerView;
+    private SongsAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    final static String TAG = "SongsFragment";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_songs,container,false);
-        l1=(ListView) view.findViewById(R.id.listsongs);
+        //l1=(ListView) view.findViewById(R.id.listsongs);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.songsList) ;
+        mRecyclerView.setHasFixedSize(true);
 
 
         b2 = (BottomNavigationView) getActivity().findViewById(R.id.botttom_nav);
-        l1.setFastScrollEnabled(true);
+        //l1.setFastScrollEnabled(true);
         runtimePermission();
 
         return view;
@@ -146,7 +154,6 @@ public class SongsFragment extends Fragment{
         albumId = new ArrayList<>();
 
 
-
         if (cursor != null && cursor.moveToFirst()) {
             int songTitle = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songArtist = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
@@ -176,6 +183,7 @@ public class SongsFragment extends Fragment{
                 albumCursor.close();
 
 
+
                 long hrs = (duration1 / 3600000);
                 long mns = (duration1 - (hrs * 3600000)) / 60000;
                 long scs = (duration1 - (hrs * 3600000) - (mns * 60000));
@@ -201,12 +209,20 @@ public class SongsFragment extends Fragment{
                     songArtists.add(artist);
                 }
             } while (cursor.moveToNext());
-            }
+        }
         cursor.close();
         //songsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, songsList);
         //l1.setAdapter(songsAdapter);
-        CustomAdapter customAdapter = new CustomAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
-        l1.setAdapter(customAdapter);
+
+        mLayoutManager = new LinearLayoutManager(myContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new SongsAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
+        mRecyclerView.setAdapter(mAdapter);
+
+
+
+        //CustomAdapter customAdapter = new CustomAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
+        //l1.setAdapter(customAdapter);
 
         b2.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -237,11 +253,20 @@ public class SongsFragment extends Fragment{
             }
         });
 
+        mAdapter.setOnItemCLickListener(new SongsAdapter.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(int position) {
+                String selectedFilePath = songFileList.get(position);
+                startActivity(new Intent(getActivity(),Main2Activity.class)
+                        .putExtra("pos",position).putExtra("pathsingle",selectedFilePath)
+                        .putStringArrayListExtra("songname",songsNameList).putStringArrayListExtra("songslist",songsList)
+                        .putStringArrayListExtra("path",songFileList).putStringArrayListExtra("time",songTimeList)
+                        .putStringArrayListExtra("cover",songCover));
+            }
+        });
 
-
-
-        l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedFilePath = songFileList.get(position);
@@ -254,20 +279,20 @@ public class SongsFragment extends Fragment{
                         .putStringArrayListExtra("cover",songCover)
                 );
             }
-        });
+        });*/
 
 
 
     }
 
-    private Uri getAlbumUri(Context myContext, String albumArt) {
+    /*private Uri getAlbumUri(Context myContext, String albumArt) {
         if(myContext!=null){
             Uri artUri = Uri.parse("content;//media/external/audio/albumart");
             Uri imageUri = Uri.withAppendedPath(artUri,String.valueOf(albumArt));
             return imageUri;
         }
         return null;
-    }
+    }*/
 
 
     /*private void displayArtists() {
@@ -277,6 +302,8 @@ public class SongsFragment extends Fragment{
         artistFragment.setArguments(bundle);
         //b2.setSelectedItemId(R.id.artists);
     }*/
+
+
 
 
 }
