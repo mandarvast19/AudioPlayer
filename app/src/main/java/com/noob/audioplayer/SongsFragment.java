@@ -1,6 +1,7 @@
 package com.noob.audioplayer;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -23,8 +24,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +43,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.DexterBuilder;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.ByteArrayOutputStream;
@@ -75,9 +83,8 @@ public class SongsFragment extends Fragment{
     private SharedViewModel viewModel;
     BottomNavigationView b2;
     private MainActivity myContext;
-
     private RecyclerView mRecyclerView;
-    private SongsAdapter mAdapter;
+    SongsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     final static String TAG = "SongsFragment";
 
@@ -96,6 +103,27 @@ public class SongsFragment extends Fragment{
 
         return view;
     }
+    /*@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.menu,menu);
+        /*MenuItem searchItem = menu.getItem(R.id.search);
+        SearchView searchView = (SearchView)searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                mAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }*/
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -110,26 +138,36 @@ public class SongsFragment extends Fragment{
         super.onAttach(activity);
     }
 
+    @SuppressLint("InlinedApi")
     public void runtimePermission(){
+
         Dexter.withActivity(getActivity())
-                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
                     @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        display();
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            display();
+                        }
+                        else if (report.isAnyPermissionPermanentlyDenied()){
+                            Toast.makeText(myContext, "Permissions should be granted", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.cancelPermissionRequest();
                     }
                 }).check();
-}
+
+        }
+        MultiplePermissionsListener dialogMultiplepermissionsListener =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                .withContext(getActivity())
+                .withMessage("Permissions should be granted")
+                .build();
 
 
     void display() {
@@ -162,6 +200,7 @@ public class SongsFragment extends Fragment{
 
             int albumid = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
 
+            Log.e(TAG, "display: "+ songTitle+"ok"+songArtist );
 
 
 
@@ -219,8 +258,6 @@ public class SongsFragment extends Fragment{
         mAdapter = new SongsAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
         mRecyclerView.setAdapter(mAdapter);
 
-
-
         //CustomAdapter customAdapter = new CustomAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
         //l1.setAdapter(customAdapter);
 
@@ -232,9 +269,6 @@ public class SongsFragment extends Fragment{
                 switch (menuItem.getItemId()){
                     case R.id.songs:
                         selectedFragment=new SongsFragment();
-                        break;
-                    case R.id.albums:
-                        selectedFragment=new AlbumFragment();
                         break;
                     case R.id.artists:
                         selectedFragment=new ArtistFragment();
@@ -266,6 +300,8 @@ public class SongsFragment extends Fragment{
             }
         });
 
+
+
         /*
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -284,17 +320,6 @@ public class SongsFragment extends Fragment{
 
 
     }
-
-    /*private Uri getAlbumUri(Context myContext, String albumArt) {
-        if(myContext!=null){
-            Uri artUri = Uri.parse("content;//media/external/audio/albumart");
-            Uri imageUri = Uri.withAppendedPath(artUri,String.valueOf(albumArt));
-            return imageUri;
-        }
-        return null;
-    }*/
-
-
     /*private void displayArtists() {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("artists",songArtists);

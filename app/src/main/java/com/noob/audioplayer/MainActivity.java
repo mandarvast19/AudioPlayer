@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,12 +40,29 @@ Fragment f1;
 Toolbar toolbar;
 ArrayList<String> songArtistsMain;
 //private static final String TAG = "MainActivity";
+    SongsAdapter myAdapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        SongsFragment sfm = new SongsFragment();
+        myAdapter=((SongsFragment) sfm ).mAdapter;
         inflater.inflate(R.menu.menu,menu);
-        return super.onCreateOptionsMenu(menu);
+        /*MenuItem searchItem = menu.getItem(R.id.search);
+        SearchView searchView = (SearchView)searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                myAdapter.getFilter().filter(s);
+                return false;
+            }
+        });*/
+        return true;
     }
 
     @Override
@@ -77,9 +95,6 @@ ArrayList<String> songArtistsMain;
                 switch (menuItem.getItemId()){
                     case R.id.songs:
                         selectedFragment=new SongsFragment();
-                        break;
-                    case R.id.albums:
-                        selectedFragment=new AlbumFragment();
                         break;
                     case R.id.artists:
                         selectedFragment=new ArtistFragment();

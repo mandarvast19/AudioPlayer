@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SectionIndexer;
@@ -29,6 +30,7 @@ public class CustomAdapter extends ArrayAdapter<String>  {
     ArrayList<String> songArtists;
     ArrayList<String> songTimeList;
     ArrayList<String> albumPath;
+    ArrayList<String> songName;
 
     Activity context;
 
@@ -40,6 +42,7 @@ public class CustomAdapter extends ArrayAdapter<String>  {
         this.songArtists = songArtists;
         this.songTimeList = songTimeList;
         this.albumPath = albumPath;
+        songName = new ArrayList<>(songsNameList);
 
 
     }

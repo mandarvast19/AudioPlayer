@@ -17,6 +17,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -50,7 +52,6 @@ public class Main2Activity extends AppCompatActivity {
     ArrayList<String> albumArt;
     ArrayList<String> songTimeList;
     Thread updateSeekBar;
-
 
 
 
@@ -167,8 +168,8 @@ public class Main2Activity extends AppCompatActivity {
                 //myMediaPlayer.release();
                 position = ((position+1)%mySongs.size());
                 String newPath = songPath.get(position);
-                //String albumPath = albumArt.get(position);
-                //getAlbumArt(myContext,albumPath);
+                String albumPath = albumArt.get(position);
+                getAlbumArt(myContext,albumPath);
                 myMediaPlayer = new MediaPlayer();
                 try {
                     myMediaPlayer.setDataSource(newPath);
@@ -197,8 +198,8 @@ public class Main2Activity extends AppCompatActivity {
                 myMediaPlayer.release();
                 position = (((position-1)<0) ?(mySongs.size()): (position-1));
                 String newPath = songPath.get(position);
-                //String albumPath = albumArt.get(position);
-                //getAlbumArt(myContext,albumPath);
+                String albumPath = albumArt.get(position);
+                getAlbumArt(myContext,albumPath);
                 myMediaPlayer = new MediaPlayer();
                 try {
                     myMediaPlayer.setDataSource(newPath);

@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/error_playlist"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="138dp"
-        android:layout_marginRight="138dp"
-        android:foregroundGravity="center"
-        android:src="@drawable/ic_error_outline_black_24dp" />
-
-    <TextView
-        android:id="@+id/error_text"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/error_playlist"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
-        android:text="No Playlists!"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        tools:ignore="RtlCompat"
+        android:gravity="center"
+        android:layout_margin="140dp">
+
+        <ImageView
+            android:id="@+id/error_playlist"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/ic_error_outline_black_24dp" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="No Playlists!"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/float_button"
@@ -45,9 +47,9 @@
 
         />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/listPlaylists" />
+        android:id="@+id/list_playlists"/>
 
 </RelativeLayout>

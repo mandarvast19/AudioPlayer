@@ -4,13 +4,17 @@ import android.content.Context;
 import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -23,20 +27,62 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider{
+public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider,Filterable {
     private ArrayList<String> sSongNamesList;
     private ArrayList<String> sSongArtistsList;
     private ArrayList<String> sSongTimeList;
     private ArrayList<String> sAlbumArt;
-    Context mycontext;
+    private ArrayList<String> songNamesFull;
+    private Context mycontext;
     private OnItemClickListener sListener;
+    private static final String TAG = "SongsAdapter";
+
 
     @Override
     public String getSectionTitle(int position) {
         //return getSectionTitle(position);
         return null;
     }
+
+    @Override
+    public Filter getFilter() {
+        return songFilter;
+    }
+    private Filter songFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<String> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(songNamesFull);
+
+            }
+            else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                Log.e(TAG, "Filterpattern: "+filterPattern );
+                for (String item : songNamesFull){
+                    if (item.toLowerCase().contains(filterPattern)){
+                        filteredList.add(item);
+                        Log.e(TAG, "performFiltering: "+item );
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            sSongNamesList.clear();
+            sSongNamesList.addAll((List)results.values);
+            for (String a : sSongNamesList){
+                Log.e(TAG, "publishResults: "+ a );
+            }
+            notifyDataSetChanged();
+        }
+    };
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -83,6 +129,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         sSongTimeList=songTimeList;
         sAlbumArt = salbumArt;
         mycontext = scontext;
+        songNamesFull = new ArrayList<>(songNamesList);
     }
 
     @NonNull
@@ -94,14 +141,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SongsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SongsViewHolder holder, final int position) {
         String songName = sSongNamesList.get(position);
         String songArtist = sSongArtistsList.get(position);
         String songTime = sSongTimeList.get(position);
         holder.songName.setText(songName);
         holder.songArtist.setText(songArtist);
         holder.songTime.setText(songTime);
-        String albumid = sAlbumArt.get(position);
+        final String albumid = sAlbumArt.get(position);
         getAlbumArt(mycontext,albumid,holder.simageView);
         try {
             holder.listMenu.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +165,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                                     switch (item.getItemId()) {
                                         case R.id.delete:
                                             Toast.makeText(mycontext, "Deleted", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case R.id.addPlaylist:
+                                            /*PlaylistsFragment fragment = new PlaylistsFragment();
+                                            ((PlaylistsFragment) fragment).addToPlayList(mycontext,albumid,,position);*/
                                     }
                                     return true;
                                 }
