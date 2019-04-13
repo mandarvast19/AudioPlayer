@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,11 +36,12 @@ public class PlaylistsFragment extends Fragment {
     FloatingActionButton add;
     ImageView error_playlist;
     TextView error_text;
-    ListView playlists;
+    ListView playlists_list;
     ArrayList<String> names;
     final static String TAG = "Playlists";
     private MainActivity myContext;
-    ArrayList<String> playlistId;
+    ArrayList<Long> playlistId;
+    PlaylistAdapter pad;
 
 
 
@@ -50,7 +53,7 @@ public class PlaylistsFragment extends Fragment {
         add = v.findViewById(R.id.float_button);
         error_text = v.findViewById(R.id.error_text);
         error_playlist = v.findViewById(R.id.error_playlist);
-        playlists = v.findViewById(R.id.playlists);
+        playlists_list = v.findViewById(R.id.list_playlists);
         playlistId = new ArrayList<>();
         Uri myUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
         names = new ArrayList<>();
@@ -81,8 +84,8 @@ public class PlaylistsFragment extends Fragment {
         Cursor cursor = getPlayList(myUri);
         if (cursor!=null && cursor.moveToFirst()){
             do {
-                String id = cursor.getString(1);
-                String name = cursor.getString(0);
+                Long id = cursor.getLong(0);
+                String name = cursor.getString(1);
                 names.add(name);
                 playlistId.add(id);
             }while ( cursor.moveToNext());
@@ -91,9 +94,22 @@ public class PlaylistsFragment extends Fragment {
         if(names != null) {
             error_playlist.setVisibility(View.INVISIBLE);
             error_text.setVisibility(View.INVISIBLE);
+            PlaylistAdapter pad = new PlaylistAdapter(getActivity(),names,playlistId);
+            playlists_list.setAdapter(pad);
+            playlists_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    startActivity(new Intent(getActivity(),DisplayPlaylists.class)
+                    .putExtra("position",position).putStringArrayListExtra("playlistNames",names)
+                    .putExtra("playlistId",playlistId));
+                }
+            });
         }
-        PlaylistAdapter pad = new PlaylistAdapter(getActivity(),names);
-        playlists.setAdapter(pad);
+        else{
+            error_playlist.setVisibility(View.VISIBLE);
+            error_text.setVisibility(View.VISIBLE);
+        }
+
 
         return v;
     }
@@ -108,37 +124,37 @@ public class PlaylistsFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Create New Playlist");
-                final EditText nameInput = new EditText(getActivity());
-                nameInput.setInputType(InputType.TYPE_CLASS_TEXT );
-                builder.setView(nameInput);
-                nameInput.setHint("Enter name");
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-
-                    String name_playlist;
-                    public boolean playlistFlag;
-                    Uri myUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        name_playlist = nameInput.getText().toString();
-                        addNewPlaylist(getActivity(),name_playlist,myUri);
-                        //error_playlist.setVisibility(View.INVISIBLE);
-                        //error_text.setVisibility(View.INVISIBLE);
-                        Log.e(TAG, "onClick: " +name_playlist );
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
+                showDialog();
             }
         });
 
 
+    }
+    public void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Create New Playlist");
+        final EditText nameInput = new EditText(getActivity());
+        nameInput.setInputType(InputType.TYPE_CLASS_TEXT );
+        builder.setView(nameInput);
+        nameInput.setHint("Enter name");
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+            String name_playlist;
+            Uri myUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                name_playlist = nameInput.getText().toString();
+                addNewPlaylist(getActivity(),name_playlist,myUri);
+                Log.e(TAG, "onClick: " +name_playlist );
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
     public void addNewPlaylist(Context context,String playlistName,Uri myUri){
@@ -169,5 +185,13 @@ public class PlaylistsFragment extends Fragment {
         final String criteria = null;
         return resolver.query(myUri,columns,criteria,null,name);
 
+    }
+    public void deletePlaylist(Context context,long playlistId,Uri myUri){
+        ContentResolver contentResolver = context.getContentResolver();
+        String where = MediaStore.Audio.Playlists._ID + "=?";
+        String playId = String.valueOf(playlistId);
+        Toast.makeText(context, "Playlist Id : Fun"+playId, Toast.LENGTH_SHORT).show();
+        String[] whereval = {playId};
+        contentResolver.delete(myUri,where,whereval);
     }
 }

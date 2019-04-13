@@ -77,6 +77,7 @@ public class SongsFragment extends Fragment{
     ArrayList<String> songAlbums;
     ArrayList<String> songTimeList;
     ArrayList<String> albumId;
+    ArrayList<String> audioId;
 
     ArrayAdapter<String> songsAdapter;
 
@@ -128,8 +129,6 @@ public class SongsFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 
     @Override
@@ -190,6 +189,7 @@ public class SongsFragment extends Fragment{
         songAlbums = new ArrayList<>();
         songTimeList = new ArrayList<>();
         albumId = new ArrayList<>();
+        audioId = new ArrayList<>();
 
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -197,6 +197,7 @@ public class SongsFragment extends Fragment{
             int songArtist = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int songDuration = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
             int songData = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            int audioid = cursor.getColumnIndex(MediaStore.Audio.Media._ID);
 
             int albumid = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
 
@@ -211,6 +212,7 @@ public class SongsFragment extends Fragment{
                 String sdata = cursor.getString(songData);
                 int duration1 = cursor.getInt(songDuration);
                 String aid = cursor.getString(albumid);
+                String audio_id = cursor.getString(audioid);
 
                 //int albumArt = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
                 Cursor albumCursor = contentResolver.query(albumUri,null,MediaStore.Audio.Albums._ID +"=?"
@@ -246,6 +248,7 @@ public class SongsFragment extends Fragment{
                     albumId.add(aid);
                     songsList.add(title + "\n" + artist + "\t" + songTime);
                     songArtists.add(artist);
+                    audioId.add(audio_id);
                 }
             } while (cursor.moveToNext());
         }
@@ -255,7 +258,7 @@ public class SongsFragment extends Fragment{
 
         mLayoutManager = new LinearLayoutManager(myContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new SongsAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
+        mAdapter = new SongsAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover,audioId);
         mRecyclerView.setAdapter(mAdapter);
 
         //CustomAdapter customAdapter = new CustomAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover);
