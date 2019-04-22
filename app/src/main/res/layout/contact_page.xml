@@ -35,6 +35,7 @@
             android:layout_height="60dp"
             android:src="@drawable/images"
             android:layout_marginRight="30dp"
+            android:layout_marginLeft="10dp"
             android:id="@+id/gmail"/>
         <ImageView
             android:layout_width="60dp"

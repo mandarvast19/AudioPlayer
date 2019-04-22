@@ -92,7 +92,7 @@ public class DisplayPlaylists extends AppCompatActivity {
                         if(secs1.length() >=2 ) {
                             secs1 = secs1.substring(0, 2);
                             secs = Long.valueOf(secs1);
-                            Log.e(TAG, "onCreate: length"+ secs1.length() );
+
                         }
                         if (mins>1) {
                             if (hrs > 0) {
@@ -118,10 +118,7 @@ public class DisplayPlaylists extends AppCompatActivity {
             }
             while (cursor.moveToNext());
         }cursor.close();
-        for (int i =0;i<audioData.size();i++){
-            Log.e(TAG, "onCreate: data" + audioData.get(i) );
-            Log.e(TAG, "onCreate: length"+ audioData.size() );
-        }
+
         final Context context = getApplicationContext();
         playLayoutManager = new LinearLayoutManager(context);
         playRecyclerView.setLayoutManager(playLayoutManager);
@@ -139,10 +136,12 @@ public class DisplayPlaylists extends AppCompatActivity {
 
     private void playAudio(ArrayList<String> audioNames, ArrayList<String> audioData,
                            ArrayList<String> audioDuration, ArrayList<String> audioAlbum) {
+
         startActivity(new Intent(getApplicationContext(),Main2Activity.class)
-        .putExtra("pos",position)
-                .putStringArrayListExtra("songname",audioNames).putStringArrayListExtra("path",audioData)
-                .putStringArrayListExtra("time",audioDuration).putStringArrayListExtra("cover",audioAlbum));
+                .putExtra("pos",position)
+                .putStringArrayListExtra("songname",audioNames)
+                .putStringArrayListExtra("path",audioData).putStringArrayListExtra("time",audioDuration)
+                .putStringArrayListExtra("cover",audioAlbum));
 
     }
 

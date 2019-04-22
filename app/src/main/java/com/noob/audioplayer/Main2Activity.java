@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -85,8 +86,10 @@ public class Main2Activity extends AppCompatActivity {
         mySongs = (ArrayList) bundle.getParcelableArrayList("songname");
         songTimeList = (ArrayList) bundle.getParcelableArrayList("time");
 
+        for (int j = 0; j<songPath.size();j++) {
+            Log.e("path", "onCreate: data in main2 "+ songPath.get(j) );
+        }
         String filePath = songPath.get(position).toString();
-
         final Context myContext = getApplicationContext();
         String albumId = albumArt.get(position);
         getAlbumArt(myContext,albumId);

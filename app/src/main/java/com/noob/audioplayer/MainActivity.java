@@ -45,10 +45,10 @@ ArrayList<String> songArtistsMain;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        SongsFragment sfm = new SongsFragment();
+        /*SongsFragment sfm = new SongsFragment();
         myAdapter=((SongsFragment) sfm ).mAdapter;
         inflater.inflate(R.menu.menu,menu);
-        /*MenuItem searchItem = menu.getItem(R.id.search);
+        MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView)searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

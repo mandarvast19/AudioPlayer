@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider {
+public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider,Filterable {
     private ArrayList<String> sSongNamesList;
     private ArrayList<String> sSongArtistsList;
     private ArrayList<String> sSongTimeList;
@@ -62,6 +62,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         //return getSectionTitle(position);
         return null;
     }
+
 
 
 
@@ -215,7 +216,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                 long playId = playIdList.get(position);
                 if(playId == 123456){
                     showDialogCreatePlaylist(audioId);
-                    dialog1.cancel();
+                    dialog1.dismiss();
                 }
                 else {
                     ((PlaylistsFragment) playlistsFragment).addToPlayList(mycontext, audioId, playId, position);
@@ -223,7 +224,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                 dialog1.dismiss();
             }
         });
-
+        dialog1.show();
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -269,6 +270,41 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
     public int getItemCount() {
         return sSongNamesList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return examplefilter;
+    }
+    private Filter examplefilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<String> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length()==0){
+                filteredList.addAll(songNamesFull);
+            }
+            else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (String item : sSongNamesList){
+                    if (item.toLowerCase().contains(filterPattern)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            sSongNamesList.clear();
+            sSongNamesList.addAll((ArrayList) results.values);
+            for (String ij : sSongNamesList) {
+                Log.e(TAG, "publishResults: filtered" +ij);
+            }
+            notifyDataSetChanged();
+        }
+    };
 
     public void getAlbumArt(Context context, String albumPath, ImageView simageView){
         Uri artUri = Uri.parse("content://media/external/audio/albumart");

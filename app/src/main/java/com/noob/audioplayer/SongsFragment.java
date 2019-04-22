@@ -103,14 +103,14 @@ public class SongsFragment extends Fragment{
         b2 = (BottomNavigationView) getActivity().findViewById(R.id.botttom_nav);
         //l1.setFastScrollEnabled(true);
         runtimePermission();
-
+        setHasOptionsMenu(true);
         return view;
     }
-    /*@Override
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuInflater menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.menu,menu);
-        /*MenuItem searchItem = menu.getItem(R.id.search);
+        MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView)searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -125,7 +125,7 @@ public class SongsFragment extends Fragment{
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
-    }*/
+    }
 
 
     @Override

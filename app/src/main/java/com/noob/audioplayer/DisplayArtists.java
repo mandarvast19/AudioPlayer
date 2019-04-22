@@ -1,5 +1,6 @@
 package com.noob.audioplayer;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class DisplayArtists extends AppCompatActivity {
     ArrayList<String> artistsName;
@@ -70,8 +72,33 @@ public class DisplayArtists extends AppCompatActivity {
                 String duration = cursor.getString(2);
                 String path = cursor.getString(3);
                 String albumid = cursor.getString(4);
+                long millisecs = Long.valueOf(duration);
+                long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
+                long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
+                long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
+                String secs1 = String.valueOf(secs);
+                if(secs1.length() >=2 ) {
+                    secs1 = secs1.substring(0, 2);
+                    secs = Long.valueOf(secs1);
+
+                }
+                if (mins>1) {
+                    if (hrs > 0) {
+                        @SuppressLint("DefaultLocale")
+                        String hms = String.format("%02d:%02d:%02d",
+                                hrs,
+                                mins - hrs,
+                                secs - mins);
+                        audioDuration.add(hms);
+                    } else {
+                        @SuppressLint("DefaultLocale")
+                        String hms = String.format("%02d:%02d",
+                                mins - hrs,
+                                secs - mins);
+                        audioDuration.add(hms);
+                    }
+                }
                 audioName.add(audioname);
-                audioDuration.add(duration);
                 audioPath.add(path);
                 albumId.add(albumid);
             }while (cursor.moveToNext());

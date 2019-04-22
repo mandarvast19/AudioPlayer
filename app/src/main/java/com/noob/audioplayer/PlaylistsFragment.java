@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -132,7 +133,8 @@ public class PlaylistsFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 name_playlist = nameInput.getText().toString();
                 addNewPlaylist(getActivity(),name_playlist,myUri);
-                Log.e(TAG, "onClick: " +name_playlist );
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(PlaylistsFragment.this).attach(PlaylistsFragment.this).commit();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

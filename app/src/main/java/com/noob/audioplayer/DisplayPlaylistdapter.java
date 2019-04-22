@@ -57,9 +57,6 @@ public class DisplayPlaylistdapter extends RecyclerView.Adapter<DisplayPlaylistd
     ArrayAdapter<String> ad;
 
 
-
-
-
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
@@ -72,7 +69,7 @@ public class DisplayPlaylistdapter extends RecyclerView.Adapter<DisplayPlaylistd
         TextView songsArtist;
         TextView songsTime;
         ImageView albumrt;
-        ImageView listmenuPlaylist;
+
 
         public PlaylistViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
@@ -80,7 +77,6 @@ public class DisplayPlaylistdapter extends RecyclerView.Adapter<DisplayPlaylistd
             songsArtist = itemView.findViewById(R.id.songArtistPlaylist);
             songsTime = itemView.findViewById(R.id.songTimePlaylist);
             albumrt = itemView.findViewById(R.id.albumArtPlaylist);
-            listmenuPlaylist = itemView.findViewById(R.id.listMenuPlaylist);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
