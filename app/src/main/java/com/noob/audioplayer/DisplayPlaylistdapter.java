@@ -129,7 +129,8 @@ public class DisplayPlaylistdapter extends RecyclerView.Adapter<DisplayPlaylistd
         final String albumid = sAlbumArt.get(position);
         //final String audioId = audioIdList.get(position);
         getAlbumArt(mycontext,albumid,holder.albumrt);
-        long millisecs = Long.valueOf(songTime);
+        holder.songsTime.setText(songTime);
+        /*long millisecs = Long.valueOf(songTime);
         long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
         long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
         long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
@@ -147,7 +148,7 @@ public class DisplayPlaylistdapter extends RecyclerView.Adapter<DisplayPlaylistd
                     mins-hrs,
                     secs-mins);
             holder.songsTime.setText(hms);
-        }
+        }*/
 
     }
 

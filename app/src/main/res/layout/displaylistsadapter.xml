@@ -51,16 +51,6 @@ android:layout_height="62dp">
     android:textColor="@android:color/black"
     android:textSize="14sp" />
 
-<ImageView
-    android:id="@+id/listMenuPlaylist"
-    android:layout_width="wrap_content"
-    android:layout_height="45dp"
-    android:layout_alignRight="@id/playlistName"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentRight="true"
-    android:layout_centerVertical="true"
-    android:layout_marginEnd="34dp"
-    android:layout_marginRight="34dp"
-    android:src="@drawable/ic_more_vert_black_24dp" />
+
 
 </RelativeLayout>

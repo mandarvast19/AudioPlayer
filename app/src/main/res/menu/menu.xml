@@ -12,10 +12,6 @@
         android:id="@+id/contact"
         android:title="@string/contact_menu"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/settings"
-        android:title="@string/settings_menu"
-        app:showAsAction="never"
-        />
+
 
 </menu>

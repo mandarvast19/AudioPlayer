@@ -67,7 +67,11 @@ ArrayList<String> songArtistsMain;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==R.id.contact){
+            startActivity(new Intent(getApplicationContext(),ContactsPage.class));
+        }
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -117,7 +121,7 @@ ArrayList<String> songArtistsMain;
         //Bundle bundle = i.getExtras();
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        /*AlbumFragment albumFragment = new AlbumFragment();*/
+
         /*ArtistFragment artistFragment = new ArtistFragment();
         //songArtistsMain = new ArrayList<>();
         //songArtistsMain = (ArrayList) bundle.getParcelableArrayList("songname");

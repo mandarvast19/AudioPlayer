@@ -22,7 +22,7 @@
         android:text="artists"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        android:textStyle="bold" />
+         />
 
 
 

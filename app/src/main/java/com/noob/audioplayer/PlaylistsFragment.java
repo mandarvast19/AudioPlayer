@@ -63,25 +63,7 @@ public class PlaylistsFragment extends Fragment {
         display();
         Context c = getActivity().getApplicationContext();
         ContentResolver resolver = getActivity().getContentResolver();
-        /*Cursor myCursor = resolver.query(myUri,null,null,null,null);
-        myCursor.moveToFirst();
 
-        if(myCursor!=null&& myCursor.moveToFirst()) {
-            int playid = myCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.PLAYLIST_ID);
-            int audioid = myCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID);
-            int playorder = myCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.PLAY_ORDER);
-
-            do{
-                String playdata = myCursor.getString(playid);
-                String audiodata = myCursor.getString(audioid);
-                playlistId.add(playdata);
-            }
-            while (myCursor.moveToNext());
-        }*/
-        /*if (playlistId.size()!= 0 && playlistId.get(0)!=null){
-            error_text.setVisibility(View.INVISIBLE);
-            error_playlist.setVisibility(View.INVISIBLE);
-        }*/
 
         Cursor cursor = getPlayList(myUri);
         if (cursor!=null && cursor.moveToFirst()){
@@ -95,7 +77,6 @@ public class PlaylistsFragment extends Fragment {
 
                 playlistId.add(id);
             }while ( cursor.moveToNext());
-
         }
         if(names != null) {
             /*error_playlist.setVisibility(View.INVISIBLE);

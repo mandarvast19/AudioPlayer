@@ -245,6 +245,11 @@ public class SongsFragment extends Fragment{
                 long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
                 long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
                 long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
+                String secs1 = String.valueOf(secs);
+                if (secs1.length()>=2) {
+                    secs1 = secs1.substring(0, 2);
+                    secs = Long.valueOf(secs1);
+                }
                 if (mins>1) {
                     if (hrs > 0) {
                         @SuppressLint("DefaultLocale")

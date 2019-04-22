@@ -158,8 +158,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                                             break;
                                         case R.id.addPlaylist:
                                             showDialog(audioId);
-                                            /*PlaylistsFragment fragment = new PlaylistsFragment();
-                                            ((PlaylistsFragment) fragment).addToPlayList(mycontext,albumid,,position);*/
                                             break;
                                     }
                                     return true;
@@ -208,7 +206,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
             }
             while (co.moveToNext());
         }
-        final AlertDialog dialog = builder.create();
+        final AlertDialog dialog1 = builder.create();
+        dialog1.show();
         list_dialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -216,11 +215,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                 long playId = playIdList.get(position);
                 if(playId == 123456){
                     showDialogCreatePlaylist(audioId);
+                    dialog1.cancel();
                 }
                 else {
                     ((PlaylistsFragment) playlistsFragment).addToPlayList(mycontext, audioId, playId, position);
                 }
-                dialog.dismiss();
+                dialog1.dismiss();
             }
         });
 
@@ -230,7 +230,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
                 dialog.cancel();
             }
         });
-        builder.show();
+
         ArrayAdapter<String> pada = new ArrayAdapter<>(mycontext,android.R.layout.simple_list_item_1,playNames);
         list_dialog.setAdapter(pada);
     }

@@ -1,5 +1,6 @@
 package com.noob.audioplayer;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class DisplayPlaylists extends AppCompatActivity {
     ArrayList<Long> playlist_lists;
@@ -82,13 +84,43 @@ public class DisplayPlaylists extends AppCompatActivity {
                         String albumart = audioCursor.getString(3);
                         audioNames.add(audioName);
                         audioArtists.add(artist);
-                        audioDuration.add(duration);
+                        long millisecs = Long.valueOf(duration);
+                        long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
+                        long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
+                        long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
+                        String secs1 = String.valueOf(secs);
+                        if(secs1.length() >=2 ) {
+                            secs1 = secs1.substring(0, 2);
+                            secs = Long.valueOf(secs1);
+                            Log.e(TAG, "onCreate: length"+ secs1.length() );
+                        }
+                        if (mins>1) {
+                            if (hrs > 0) {
+                                @SuppressLint("DefaultLocale")
+                                String hms = String.format("%02d:%02d:%02d",
+                                        hrs,
+                                        mins - hrs,
+                                        secs - mins);
+                                audioDuration.add(hms);
+                            } else {
+                                @SuppressLint("DefaultLocale")
+                                String hms = String.format("%02d:%02d",
+                                        mins - hrs,
+                                        secs - mins);
+                                audioDuration.add(hms);
+                            }
+                        }
                         audioData.add(data);
                         audioAlbum.add(albumart);
                     }while(audioCursor.moveToNext());
                 }
+                audioCursor.close();
             }
             while (cursor.moveToNext());
+        }cursor.close();
+        for (int i =0;i<audioData.size();i++){
+            Log.e(TAG, "onCreate: data" + audioData.get(i) );
+            Log.e(TAG, "onCreate: length"+ audioData.size() );
         }
         final Context context = getApplicationContext();
         playLayoutManager = new LinearLayoutManager(context);

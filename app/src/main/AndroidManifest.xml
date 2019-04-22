@@ -52,7 +52,10 @@
             android:label="Audio"
             android:theme="@style/AppPlaylistTheme"
             />
-
+        <activity android:name=".DisplayArtists"
+            android:theme="@style/AppPlaylistTheme"/>
+        <activity android:name=".ContactsPage"
+            android:theme="@style/AppPlaylistTheme"/>
     </application>
 
 </manifest>
