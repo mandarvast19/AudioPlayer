@@ -41,6 +41,7 @@ public class PlaylistsFragment extends Fragment {
     final static String TAG = "Playlists";
     private MainActivity myContext;
     ArrayList<Long> playlistId;
+    ArrayList<String> playIdString;
     PlaylistAdapter pad;
 
 
@@ -51,10 +52,11 @@ public class PlaylistsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playlists,container,false);
         add = v.findViewById(R.id.float_button);
-        error_text = v.findViewById(R.id.error_text);
-        error_playlist = v.findViewById(R.id.error_playlist);
+        //error_text = v.findViewById(R.id.error_text);
+        //error_playlist = v.findViewById(R.id.error_playlist);
         playlists_list = v.findViewById(R.id.list_playlists);
         playlistId = new ArrayList<>();
+        playIdString = new ArrayList<>();
         Uri myUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
         names = new ArrayList<>();
         playlistId =  new ArrayList<>();
@@ -86,28 +88,32 @@ public class PlaylistsFragment extends Fragment {
             do {
                 Long id = cursor.getLong(0);
                 String name = cursor.getString(1);
+                String playString = String.valueOf(id);
+                playIdString.add(playString);
                 names.add(name);
+
+
                 playlistId.add(id);
             }while ( cursor.moveToNext());
 
         }
         if(names != null) {
-            error_playlist.setVisibility(View.INVISIBLE);
-            error_text.setVisibility(View.INVISIBLE);
+            /*error_playlist.setVisibility(View.INVISIBLE);
+            error_text.setVisibility(View.INVISIBLE);*/
             PlaylistAdapter pad = new PlaylistAdapter(getActivity(),names,playlistId);
             playlists_list.setAdapter(pad);
             playlists_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     startActivity(new Intent(getActivity(),DisplayPlaylists.class)
-                    .putExtra("position",position).putStringArrayListExtra("playlistNames",names)
+                    .putExtra("pos",position).putStringArrayListExtra("playlistNames",names)
                     .putExtra("playlistId",playlistId));
                 }
             });
         }
         else{
-            error_playlist.setVisibility(View.VISIBLE);
-            error_text.setVisibility(View.VISIBLE);
+            //error_playlist.setVisibility(View.VISIBLE);
+            //error_text.setVisibility(View.VISIBLE);
         }
 
 

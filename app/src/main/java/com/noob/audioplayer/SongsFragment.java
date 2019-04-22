@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -59,6 +60,7 @@ import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
@@ -192,6 +194,9 @@ public class SongsFragment extends Fragment{
         audioId = new ArrayList<>();
 
 
+        //AsyncAlbum runner = new AsyncAlbum();
+        //new Thread(runner).start();
+
         if (cursor != null && cursor.moveToFirst()) {
             int songTitle = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songArtist = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
@@ -201,31 +206,25 @@ public class SongsFragment extends Fragment{
 
             int albumid = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
 
-            Log.e(TAG, "display: "+ songTitle+"ok"+songArtist );
-
-
-
             do {
                 String title = cursor.getString(songTitle);
                 String artist = cursor.getString(songArtist);
                 String duration = cursor.getString(songDuration);
                 String sdata = cursor.getString(songData);
-                int duration1 = cursor.getInt(songDuration);
                 String aid = cursor.getString(albumid);
                 String audio_id = cursor.getString(audioid);
+                String albumCover = cursor.getString(albumid);
 
                 //int albumArt = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
-                Cursor albumCursor = contentResolver.query(albumUri,null,MediaStore.Audio.Albums._ID +"=?"
+                /*Cursor albumCursor = contentResolver.query(albumUri,null,MediaStore.Audio.Albums._ID +"=?"
                         ,new String[] {aid}, null);
 
                 albumCursor.moveToFirst();
                 String albumArt = albumCursor.getString(albumCursor.getColumnIndex(BaseColumns._ID));
                 songCover.add(albumArt);
-                albumCursor.close();
+                albumCursor.close();*/
 
-
-
-                long hrs = (duration1 / 3600000);
+                /*long hrs = (duration1 / 3600000);
                 long mns = (duration1 - (hrs * 3600000)) / 60000;
                 long scs = (duration1 - (hrs * 3600000) - (mns * 60000));
                 String minutes = String.valueOf(mns);
@@ -240,15 +239,35 @@ public class SongsFragment extends Fragment{
                     songTime = hrs + ":" + minutes + ":" + seconds;
                 } else {
                     songTime = minutes + ":" + seconds;
-                }
-                if (mns > 1) {
+                }*/
+
+                long millisecs = Long.valueOf(duration);
+                long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
+                long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
+                long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
+                if (mins>1) {
+                    if (hrs > 0) {
+                        @SuppressLint("DefaultLocale")
+                        String hms = String.format("%02d:%02d:%02d",
+                                hrs,
+                                mins - hrs,
+                                secs - mins);
+                        songTimeList.add(hms);
+                        songsList.add(title + "\n" + artist + "\t" + hms);
+                    } else {
+                        @SuppressLint("DefaultLocale")
+                        String hms = String.format("%02d:%02d",
+                                mins - hrs,
+                                secs - mins);
+                        songTimeList.add(hms);
+                        songsList.add(title + "\n" + artist + "\t" + hms);
+                    }
                     songsNameList.add(title);
                     songFileList.add(sdata);
-                    songTimeList.add(songTime);
                     albumId.add(aid);
-                    songsList.add(title + "\n" + artist + "\t" + songTime);
                     songArtists.add(artist);
                     audioId.add(audio_id);
+                    songCover.add(albumCover);
                 }
             } while (cursor.moveToNext());
         }
@@ -294,6 +313,7 @@ public class SongsFragment extends Fragment{
 
             @Override
             public void onItemClick(int position) {
+
                 String selectedFilePath = songFileList.get(position);
                 startActivity(new Intent(getActivity(),Main2Activity.class)
                         .putExtra("pos",position).putExtra("pathsingle",selectedFilePath)
@@ -322,6 +342,24 @@ public class SongsFragment extends Fragment{
 
 
 
+    }
+    public void SendData(final ArrayList<String> songsNameList, ArrayList<String> songArtists, final ArrayList<String> songTimeList, final ArrayList<String> songCover, ArrayList<String> audioId){
+        mLayoutManager = new LinearLayoutManager(myContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new SongsAdapter(getActivity(),songsNameList,songArtists,songTimeList,songCover,audioId);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemCLickListener(new SongsAdapter.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(int position) {
+                String selectedFilePath = songFileList.get(position);
+                startActivity(new Intent(getActivity(),Main2Activity.class)
+                        .putExtra("pos",position).putExtra("pathsingle",selectedFilePath)
+                        .putStringArrayListExtra("songname",songsNameList).putStringArrayListExtra("songslist",songsList)
+                        .putStringArrayListExtra("path",songFileList).putStringArrayListExtra("time",songTimeList)
+                        .putStringArrayListExtra("cover",songCover));
+            }
+        });
     }
     /*private void displayArtists() {
         Bundle bundle = new Bundle();

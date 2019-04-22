@@ -27,16 +27,16 @@ android:layout_height="62dp">
     android:textSize="16sp"
     />
 
-<TextView
-    android:id="@+id/songArtistPlaylist"
-    android:layout_width="215dp"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/songName"
-    android:layout_toRightOf="@id/albumArtPlaylist"
-    android:layout_marginLeft="18dp"
-    android:text="Sub"
-    android:singleLine="true"
-    android:textSize="14sp" />
+    <TextView
+        android:id="@+id/songArtistPlaylist"
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playlistName"
+        android:layout_marginLeft="22dp"
+        android:layout_toRightOf="@id/albumArtPlaylist"
+        android:singleLine="true"
+        android:text="Sub"
+        android:textSize="14sp" />
 
 <TextView
     android:id="@+id/songTimePlaylist"

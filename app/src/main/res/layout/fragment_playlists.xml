@@ -4,30 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="RtlCompat"
-        android:gravity="center"
-        android:layout_margin="140dp">
 
-        <ImageView
-            android:id="@+id/error_playlist"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@drawable/ic_error_outline_black_24dp" />
-
-        <TextView
-            android:id="@+id/error_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="No Playlists!"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/list_playlists"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/float_button"
@@ -46,9 +27,6 @@
 
         />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_playlists"/>
+
 
 </RelativeLayout>

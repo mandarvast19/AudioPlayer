@@ -5,8 +5,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
         
+    </style>
+
+    <style name="AppPlaylistTheme" parent="Theme.AppCompat.Light">
+
     </style>
     
     <style name="customToolbar" parent="Theme.AppCompat.Light.NoActionBar">

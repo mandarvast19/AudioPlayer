@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main2Activity" />
+        <activity android:name=".Main2Activity"
+            android:theme="@style/AppPlaylistTheme"
+            android:label="Now Playing"/>
         <activity android:name=".Discover"/>
         <activity android:name=".download_activity"
             android:label="Download">
@@ -46,6 +48,10 @@
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
+        <activity android:name=".DisplayPlaylists"
+            android:label="Audio"
+            android:theme="@style/AppPlaylistTheme"
+            />
 
     </application>
 

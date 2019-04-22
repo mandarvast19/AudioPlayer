@@ -34,6 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Main2Activity extends AppCompatActivity {
     Button previousb,nextb;
@@ -53,9 +54,6 @@ public class Main2Activity extends AppCompatActivity {
     ArrayList<String> songTimeList;
     Thread updateSeekBar;
 
-
-
-
     @SuppressLint({"NewApi", "ResourceAsColor"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +68,10 @@ public class Main2Activity extends AppCompatActivity {
         timelabel = (TextView) findViewById(R.id.timelabel);
         timelabel2 = (TextView) findViewById(R.id.timelabel2);
 
-        //setTitle("Now Playing");
-        /*getSupportActionBar().setTitle("Now Playing");
+        setTitle("Now Playing");
+        /*getSupportActionBar().setTitle("Now Playing");*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent i = getIntent();
         Bundle bundle =  i.getExtras();
@@ -303,7 +301,9 @@ public class Main2Activity extends AppCompatActivity {
 
     public class SeekRunnable implements Runnable{
         String songPosition;
+        String hms;
 
+        @SuppressLint("DefaultLocale")
         @Override
         public void run() {
             int totalDuration = myMediaPlayer.getDuration();
@@ -311,32 +311,32 @@ public class Main2Activity extends AppCompatActivity {
             //String songPosition = null;
             timelabel2.setText(duration);
             int currentposition = 0;
+
             while(currentposition<totalDuration){
                 try {
                     Thread.sleep(1000);
                     currentposition = myMediaPlayer.getCurrentPosition();
                     songSeek.setProgress(currentposition);
-                    //final String songPosition = String.valueOf(currentposition);
-                    int hrs = (int) ((currentposition / 3600000))*100/10;
-                    int mns = (int)((currentposition - (hrs * 3600000)) / 60000)*100/10;
-                    int scs = (int)((currentposition - (hrs * 3600000) - (mns * 60000)))*100/10;
-                    String minutes = String.valueOf(mns);
-                    String seconds = String.valueOf(scs);
-                    if (seconds.length() < 2) {
-                        seconds = "00";
-                    } else {
-                        seconds = seconds.substring(0, 2);
+                    long millisecs = Long.valueOf(currentposition);
+                    long hrs = TimeUnit.MILLISECONDS.toHours(millisecs);
+                    long mins = TimeUnit.MILLISECONDS.toMinutes(millisecs);
+                    long secs = TimeUnit.MILLISECONDS.toSeconds(millisecs);
+                    if (hrs>0) {
+                         hms = String.format("%02d:%02d:%02d",
+                                hrs,
+                                mins-hrs,
+                                secs-mins);
                     }
+                    else{
 
-                    if (hrs > 0) {
-                        songPosition = hrs + ":" + minutes + ":" + seconds;
-                    } else {
-                        songPosition= minutes + ":" + seconds;
+                         hms = String.format("%02d:%02d",
+                                mins-hrs,
+                                secs-mins);
                     }
                     timelabel.post(new Runnable() {
                         @Override
                         public void run() {
-                            timelabel.setText(songPosition);
+                            timelabel.setText(hms);
                         }
                     });
                     //cancel(true);
@@ -349,12 +349,7 @@ public class Main2Activity extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-    /*@Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
@@ -362,6 +357,6 @@ public class Main2Activity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
 }

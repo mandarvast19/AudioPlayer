@@ -39,10 +39,12 @@ import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider,Filterable {
+public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHolder>  implements SectionTitleProvider {
     private ArrayList<String> sSongNamesList;
     private ArrayList<String> sSongArtistsList;
     private ArrayList<String> sSongTimeList;
@@ -61,43 +63,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         return null;
     }
 
-    @Override
-    public Filter getFilter() {
-        return songFilter;
-    }
-    private Filter songFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<String> filteredList = new ArrayList<>();
-            if(constraint == null || constraint.length() == 0){
-                filteredList.addAll(songNamesFull);
 
-            }
-            else{
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                Log.e(TAG, "Filterpattern: "+filterPattern );
-                for (String item : songNamesFull){
-                    if (item.toLowerCase().contains(filterPattern)){
-                        filteredList.add(item);
-                        Log.e(TAG, "performFiltering: "+item );
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            sSongNamesList.clear();
-            sSongNamesList.addAll((List)results.values);
-            for (String a : sSongNamesList){
-                Log.e(TAG, "publishResults: "+ a );
-            }
-            notifyDataSetChanged();
-        }
-    };
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -164,6 +130,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         holder.songName.setText(songName);
         holder.songArtist.setText(songArtist);
         holder.songTime.setText(songTime);
+
+
+
+
+
         final String albumid = sAlbumArt.get(position);
         final String audioId = audioIdList.get(position);
         getAlbumArt(mycontext,albumid,holder.simageView);
@@ -217,7 +188,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void showDialog(final String audioId) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mycontext);
-        builder.setTitle("Create New Playlist");
+        builder.setTitle("Add to Playlist");
         final ArrayList<String> playNames = new ArrayList<>();
         final ArrayList<Long> playIdList = new ArrayList<>();
         ListView list_dialog = new ListView(mycontext);
