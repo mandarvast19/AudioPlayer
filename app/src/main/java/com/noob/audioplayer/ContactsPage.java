@@ -3,6 +3,7 @@ package com.noob.audioplayer;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,16 +47,28 @@ public class ContactsPage extends AppCompatActivity {
     }
 
     private void openIntentTg() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        String appName = "org.telegram.messenger";
-        intent.setData(Uri.parse("http://telegram.me/mandar19"));
-        /*intent.setPackage(appName);
-        intent.setPackage("org")*/
-        try {
+        
+        String appName = "org.telegram.plus";
+        boolean isAppInstalled = isAppAvail(getApplicationContext(),appName);
+        if(isAppInstalled) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.setPackage(appName);
+            intent.putExtra(Intent.EXTRA_TEXT,"Hello");
+            intent.setData(Uri.parse("http://telegram.me/mandar19"));
             this.startActivity(Intent.createChooser(intent, "Share with"));
         }
-        catch(android.content.ActivityNotFoundException e){
+        else{
             Toast.makeText(this, "Install Telegram", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public boolean isAppAvail(Context context,String appname){
+        PackageManager pm = context.getPackageManager();
+        try{
+            pm.getPackageInfo(appname, PackageManager.GET_ACTIVITIES);
+            return true;
+        }catch(Exception ex){
+            return false;
         }
     }
 }

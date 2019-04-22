@@ -26,7 +26,8 @@
             android:label="Now Playing"/>
         <activity android:name=".Discover"/>
         <activity android:name=".download_activity"
-            android:label="Download">
+            android:label="Download"
+            android:theme="@style/AppPlaylistTheme">
             <intent-filter android:label="Download">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
@@ -46,6 +47,12 @@
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
+            </intent-filter>
+            <intent-filter android:label="Download">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"
+                    android:host="youtu.be"/>
             </intent-filter>
         </activity>
         <activity android:name=".DisplayPlaylists"

@@ -1,7 +1,10 @@
 package com.noob.audioplayer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.SparseArray;
@@ -19,8 +22,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Random;
 
 import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YouTubeUriExtractor;
 import at.huber.youtubeExtractor.YtFile;
 
@@ -31,6 +36,7 @@ public class download_activity extends Activity {
     private String ytlink = "https://youtube.com/watch?v=x865r5EqKDo";
     private LinearLayout mainlayout;
     private ProgressBar mainprogress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,28 +50,49 @@ public class download_activity extends Activity {
             @Override
             public void onClick(View v) {
                 //ytEx.execute(ytlink);
+                getDownload();
             }
         });
-
+        Context c = getApplicationContext();
     }
 
-    /*YouTubeUriExtractor ytEx = new YouTubeUriExtractor(getApplication()) {
-        @Override
-        public void onUrisAvailable(String videoId, String videoTitle, SparseArray<YtFile> ytFiles) {
-            if(ytFiles!=null){
-                int itag = 22;
-                String filename ="download.mp4";
-                String stoagePath = Environment.getExternalStorageDirectory().toString();
-                File f = new File(filename,stoagePath);
-                String downloadUrl = ytFiles.get(itag).getUrl();
-                download(downloadUrl,f);
+    @SuppressLint("StaticFieldLeak")
+    private void getDownload() {
+        new YouTubeExtractor(getApplicationContext()){
+            @Override
+            protected void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta videoMeta) {
+                if(ytFiles!=null){
+                    int tag = 140;
+                    String downloadurl = "";
+                    try{
+                        downloadurl = ytFiles.get(tag).getUrl();
+                    }
+                    catch(Exception e){
+                        tag = 171;
+                        try {
+                            downloadurl = ytFiles.get(tag).getUrl();
+                        }
+                        catch(Exception ex){
+                            Toast.makeText(getApplicationContext(), "Not supported", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    if(!downloadurl.toString().isEmpty()){
+                        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                        String exten = ".mp3";
+                        DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadurl));
+                        downloadRequest.allowScanningByMediaScanner();
+                        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        downloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,videoMeta.getTitle() +exten);
+                        downloadManager.enqueue(downloadRequest);
+                        Toast.makeText(getApplicationContext(), "Audio has been downloaded.Check Downloads Folder for file", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
-        }
+        }.extract(ytlink,true,true);
+    }
 
-    };*/
 
-
-    public static void download(String url, File outputFile){
+    /*public void download(String url, String outputFile){
         try{
             URL u = new URL(url);
             URLConnection conn = u.openConnection();
@@ -82,5 +109,6 @@ public class download_activity extends Activity {
         catch(Exception e){
             e.printStackTrace();
         }
-    }
+
+    }*/
 }

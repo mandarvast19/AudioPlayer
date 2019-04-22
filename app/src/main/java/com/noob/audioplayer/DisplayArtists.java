@@ -97,10 +97,11 @@ public class DisplayArtists extends AppCompatActivity {
                                 secs - mins);
                         audioDuration.add(hms);
                     }
+                    audioName.add(audioname);
+                    audioPath.add(path);
+                    albumId.add(albumid);
                 }
-                audioName.add(audioname);
-                audioPath.add(path);
-                albumId.add(albumid);
+
             }while (cursor.moveToNext());
         }cursor.close();
         String albumfirst = albumId.get(0);

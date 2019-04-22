@@ -109,9 +109,10 @@ public class DisplayPlaylists extends AppCompatActivity {
                                         secs - mins);
                                 audioDuration.add(hms);
                             }
+                            audioData.add(data);
+                            audioAlbum.add(albumart);
                         }
-                        audioData.add(data);
-                        audioAlbum.add(albumart);
+
                     }while(audioCursor.moveToNext());
                 }
                 audioCursor.close();
@@ -129,13 +130,13 @@ public class DisplayPlaylists extends AppCompatActivity {
         dpd.setOnItemCLickListener(new DisplayPlaylistdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                playAudio(audioNames,audioData,audioDuration,audioAlbum);
+                playAudio(audioNames,audioData,audioDuration,audioAlbum,position);
             }
         });
     }
 
     private void playAudio(ArrayList<String> audioNames, ArrayList<String> audioData,
-                           ArrayList<String> audioDuration, ArrayList<String> audioAlbum) {
+                           ArrayList<String> audioDuration, ArrayList<String> audioAlbum,int position) {
 
         startActivity(new Intent(getApplicationContext(),Main2Activity.class)
                 .putExtra("pos",position)
